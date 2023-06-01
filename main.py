@@ -1,52 +1,48 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
+def read_file():
+    edges = []
+    with open('input.txt', 'r') as file:
+        for line in file:
+            edges.append(line.replace('\n', '').split(' '))
+        for i in range(len(edges)):
+            for j in 0, 1:
+                try:
+                    edges[i][j] = int(edges[i][j])
+                except:
+                    raise Exception('Invalid input')
+    return edges
+
+
+def find_max(arrays):
+  max_val = float('-inf')
+  for array in arrays:
+    for num in array:
+      if num > max_val:
+        max_val = num
+  return max_val
+
+
 # Запрос количества вершин и ребер у пользователя
-number = input("Введите количество вершин: ")
-while not number.isnumeric():
-    print("Невозможное значение")
-    number = input("Введите количество вершин: ")
-n = int(number)
-while n < 0:
-    print("Количество вершин не может быть отрицательным")
-    n = int(input("Введите количество вершин: "))
+edges = read_file()
+n = int(find_max(edges))
 # Создание пустого графа
 G = nx.Graph()
 # Добавление вершин в граф
 for i in range(n):
     G.add_node(i+1)
-while True:
-    action = input("Для создания нового соединения напишите - 'add'; для отображения графа напишите - 'draw'; "
-                   "для того что бы закончить напишите - 'end': \n")
-    match action:
-        case 'add':
-            str_x = input("Введите исходящую вершину графа: ")
-            while not str_x.isnumeric():
-                print("Невозможное значение")
-                str_x = input("Введите исходящую вершину графа: ")
-            x = int(str_x)
-            while x > n or x <= 0:
-                print("Невозможное значение")
-                x = int(input("Введите исходящую вершину графа: "))
-            str_y = input("Введите приходящую вершину графа: ")
-            while not str_y.isnumeric():
-                print("Невозможное значение")
-                str_y = input("Введите приходящую вершину графа: ")
-            y = int(str_y)
-            while y > n or y <= 0:
-                print("Невозможное значение")
-                y = int(input("Введите исходящую вершину графа: "))
+for n in range(len(edges)):
+    for q in range(len(edges[n])):
+        if q % 2 == 0:
+            x = edges[n][q]
+            y = edges[n][q + 1]
             G.add_edge(x, y)
-            # проверяем связанность графа
-            if nx.is_connected(G):
-                print("\nГраф связный\n")
-            else:
-                print("\nГраф не связный\n")
-        case 'draw':
-            # Отображение графа
-            nx.draw(G, with_labels=True)
-            plt.show()
-        case 'end':
-            break
-        case _:
-            print("Неизвестное действие")
+if nx.is_connected(G):
+    print("\nГраф связный\n")
+else:
+    print("\nГраф не связный\n")
+
+nx.draw(G, with_labels=True)
+plt.show()
